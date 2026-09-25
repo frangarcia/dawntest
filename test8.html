@@ -8,7 +8,7 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Publishing Manager Lightbox Test</title>
+  <title>Publishing Manager Display Test</title>
 
   <style>
     html {
@@ -19,7 +19,7 @@
       margin: 0;
       padding: 0;
       background-color: navajowhite;
-      color: #222;
+      color: #222222;
       font-family: Arial, sans-serif;
       line-height: 1.6;
     }
@@ -55,6 +55,18 @@
       margin-bottom: 8px;
     }
 
+    .target {
+      min-height: 120px;
+      padding: 16px;
+      background-color: #ffffff;
+      border: 2px solid #333333;
+    }
+
+    .multiple-selector {
+      min-height: 150px;
+      background-color: #fff5dc;
+    }
+
     footer {
       padding: 24px;
       background-color: #ffffff;
@@ -69,11 +81,11 @@
 
 <body>
   <header>
-    <h1 id="my-title">Publishing Manager Lightbox Test</h1>
+    <h1 id="my-title">Publishing Manager Display Test</h1>
 
     <p>
-      This page is used to test multiple Lightboxes loaded through a
-      Publishing Manager.
+      This page is used to test multiple Lightboxes and Web Embeds
+      loaded through a Publishing Manager.
     </p>
 
     <div class="page-links">
@@ -113,7 +125,86 @@
 
       <p>
         This section provides content near the top of the page for
-        testing Lightboxes using the Page Load or timed trigger.
+        testing Lightboxes using Page Load and timed triggers.
+      </p>
+    </section>
+
+    <section id="adaptive-embed-section">
+      <h2>Adaptive Web Embed — Append</h2>
+
+      <p>
+        The adaptive Web Embed should be inserted as the final child
+        inside the target below.
+      </p>
+
+      <div id="append-target" class="target">
+        <p>
+          Existing content before the appended Web Embed.
+        </p>
+      </div>
+    </section>
+
+    <section id="horizontal-embed-section">
+      <h2>Horizontal Web Embed — Prepend</h2>
+
+      <p>
+        The horizontal Web Embed should be inserted as the first child
+        inside the target below.
+      </p>
+
+      <div id="prepend-target" class="target">
+        <p>Existing first child.</p>
+        <p>Existing second child.</p>
+      </div>
+    </section>
+
+    <section id="before-after-section">
+      <h2>Before and After insertion test</h2>
+
+      <p>
+        This target can be used to test the Before and After insertion
+        methods.
+      </p>
+
+      <div id="before-after-target" class="target">
+        This is the target element. The Web Embed should appear outside
+        this element when using Before or After.
+      </div>
+    </section>
+
+    <section id="fixed-embed-section">
+      <h2>Fixed Web Embed</h2>
+
+      <p>
+        The fixed-size Web Embed should retain its configured width and
+        height.
+      </p>
+
+      <div id="fixed-target" class="target">
+        <p>
+          The fixed-size Web Embed should appear inside this element.
+        </p>
+      </div>
+    </section>
+
+    <section class="multiple-selector">
+      <h2>Multiple Selector Match 1</h2>
+
+      <p>
+        This section shares the
+        <code>.multiple-selector</code>
+        class with another section.
+      </p>
+    </section>
+
+    <section class="multiple-selector">
+      <h2>Multiple Selector Match 2</h2>
+
+      <p>
+        Use
+        <code>.multiple-selector</code>
+        as the CSS selector to test what happens when multiple elements
+        match.
       </p>
     </section>
 
@@ -163,13 +254,13 @@
       <h2>Section 5 — Bottom of page</h2>
 
       <p>
-        This is the final section of the Publishing Manager Lightbox test
+        This is the final section of the Publishing Manager Display Test
         page.
       </p>
 
       <p>
         Return to the top or refresh the page to repeat trigger,
-        targeting, frequency-cap, and Test Mode checks.
+        targeting, frequency-cap and Test Mode checks.
       </p>
 
       <p>
@@ -179,7 +270,7 @@
   </main>
 
   <footer>
-    Publishing Manager Lightbox Test Page
+    Publishing Manager Display Test Page
   </footer>
 
   <script>
