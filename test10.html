@@ -114,32 +114,25 @@
 
   <!-- Customer ID API distribution test -->
   <script>
-    window.ngxReadyMicro = function () {
-      console.log('PARENT: NGX READY');
+  window.ngxReadyMicro = function () {
+    NGX.api(
+      'event:listen',
+      'page:ready',
+      function (info) {
+        console.log(
+          'PARENT> page:ready, info:',
+          info
+        );
 
-      NGX.api(
-        'event:listen',
-        'page:ready',
-        function (info) {
-          console.log(
-            'PARENT: CHILD PAGE READY',
-            info
-          );
-
-          NGX.api(
-            'form:set:customerid',
-            'jane-doe-987@example.com',
-            'email'
-          );
-
-          console.log(
-            'PARENT: CUSTOMER ID SENT',
-            'jane-doe-987@example.com'
-          );
-        }
-      );
-    };
-  </script>
+        NGX.api(
+          'form:set:customerid',
+          'jane-doe-987',
+          'id-type'
+        );
+      }
+    );
+  };
+</script>
 
   <!-- One-time Publishing Manager code -->
   <script
