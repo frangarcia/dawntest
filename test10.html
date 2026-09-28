@@ -75,38 +75,39 @@
     }
   </style>
 
-  <!--
-    Test observer:
-    Reports when Web Embed and Lightbox campaign scripts are added.
-  -->
+  <!-- Reports when destination scripts are added -->
   <script>
-    const publishingManagerObserver = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        for (const node of mutation.addedNodes) {
-          if (node.nodeType !== Node.ELEMENT_NODE) {
-            continue;
-          }
+    const publishingManagerObserver =
+      new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          for (const node of mutation.addedNodes) {
+            if (node.nodeType !== Node.ELEMENT_NODE) {
+              continue;
+            }
 
-          if (
-            node.tagName === 'SCRIPT' &&
-            (
-              node.src?.includes('/embed/') ||
-              node.src?.includes('/lightbox/')
-            )
-          ) {
-            console.log(
-              'CAMPAIGN SCRIPT ADDED:',
-              node.src
-            );
+            if (
+              node.tagName === 'SCRIPT' &&
+              (
+                node.src?.includes('/embed/') ||
+                node.src?.includes('/lightbox/')
+              )
+            ) {
+              console.log(
+                'CAMPAIGN SCRIPT ADDED:',
+                node.src
+              );
+            }
           }
         }
-      }
-    });
+      });
 
-    publishingManagerObserver.observe(document.documentElement, {
-      childList: true,
-      subtree: true
-    });
+    publishingManagerObserver.observe(
+      document.documentElement,
+      {
+        childList: true,
+        subtree: true
+      }
+    );
 
     console.log('OBSERVER STARTED');
   </script>
@@ -127,12 +128,13 @@
 
           NGX.api(
             'form:set:customerid',
-            'jane-doe-987',
-            'id-type'
+            'jane-doe-987@example.com',
+            'email'
           );
 
           console.log(
-            'PARENT: CUSTOMER ID SENT'
+            'PARENT: CUSTOMER ID SENT',
+            'jane-doe-987@example.com'
           );
         }
       );
