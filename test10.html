@@ -8,7 +8,7 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Publishing Manager Pre/Post Script Test</title>
+  <title>Publishing Manager Display and API Test</title>
 
   <style>
     html {
@@ -111,6 +111,34 @@
     console.log('OBSERVER STARTED');
   </script>
 
+  <!-- Customer ID API distribution test -->
+  <script>
+    window.ngxReadyMicro = function () {
+      console.log('PARENT: NGX READY');
+
+      NGX.api(
+        'event:listen',
+        'page:ready',
+        function (info) {
+          console.log(
+            'PARENT: CHILD PAGE READY',
+            info
+          );
+
+          NGX.api(
+            'form:set:customerid',
+            'jane-doe-987',
+            'id-type'
+          );
+
+          console.log(
+            'PARENT: CUSTOMER ID SENT'
+          );
+        }
+      );
+    };
+  </script>
+
   <!-- One-time Publishing Manager code -->
   <script
     src="https://d1-displayx.ngx.dev/manager/290fe746-3e4d-402e-93bc-e326324902a1?source=qa&amp;utm_campaign=publishing-manager"
@@ -120,12 +148,12 @@
 <body>
   <header>
     <h1 id="my-title">
-      Publishing Manager Pre/Post Script Test
+      Publishing Manager Display and API Test
     </h1>
 
     <p>
-      This page tests Publishing Manager Pre Script and Post Script
-      execution order.
+      This page tests multiple Lightboxes and Web Embeds loaded through
+      a Publishing Manager, including Customer ID API distribution.
     </p>
 
     <div class="page-links">
@@ -310,7 +338,7 @@
   </main>
 
   <footer>
-    Publishing Manager Pre/Post Script Test Page
+    Publishing Manager Display and API Test Page
   </footer>
 
   <script>
