@@ -112,9 +112,11 @@
     console.log('OBSERVER STARTED');
   </script>
 
-  <!-- Customer ID API distribution test -->
-  <script>
+ <!-- Privacy Consent API distribution test -->
+<script>
   window.ngxReadyMicro = function () {
+    console.log('PARENT: NGX READY');
+
     NGX.api(
       'event:listen',
       'page:ready',
@@ -124,10 +126,21 @@
           info
         );
 
+        const consent = {
+          necessary: true,
+          functional: true,
+          analytics: false,
+          marketing: false
+        };
+
         NGX.api(
-          'form:set:customerid',
-          'jane-doe-987',
-          'id-type'
+          'privacy:set:consent',
+          consent
+        );
+
+        console.log(
+          'PARENT> privacy consent sent:',
+          consent
         );
       }
     );
