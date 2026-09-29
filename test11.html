@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Same Campaign Multiple Destinations Test</title>
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: navajowhite;
+      color: #222222;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 24px;
+      background-color: #ffffff;
+      border-bottom: 2px solid #333333;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    section {
+      min-height: 500px;
+      margin-bottom: 32px;
+      padding: 24px;
+      background-color: rgba(255, 255, 255, 0.65);
+      border: 2px dashed #76552b;
+      border-radius: 8px;
+    }
+
+    .test-summary {
+      padding: 16px;
+      background-color: #fff5dc;
+      border: 2px solid #76552b;
+      border-radius: 8px;
+    }
+
+    .test-summary li {
+      margin-bottom: 8px;
+    }
+
+    .scroll-marker {
+      padding: 16px;
+      background-color: #ffffff;
+      border: 2px solid #333333;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .page-links {
+      margin-top: 16px;
+    }
+
+    .page-links a {
+      display: inline-block;
+      margin-right: 16px;
+      margin-bottom: 8px;
+    }
+
+    footer {
+      padding: 24px;
+      background-color: #ffffff;
+      border-top: 2px solid #333333;
+      text-align: center;
+    }
+  </style>
+
+  <!--
+    This page must contain only one Placement Manager script.
+    New Placement Manager:
+    10ec4ef2-f4c7-4fd5-9673-e505d7f10208
+  -->
+  <script
+    src="https://d1-displayx.ngx.dev/manager/10ec4ef2-f4c7-4fd5-9673-e505d7f10208"
+  ></script>
+</head>
+
+<body>
+  <header>
+    <h1 id="page-top">
+      Same Campaign Multiple Destinations Test
+    </h1>
+
+    <p>
+      This page tests one NextGen campaign published to the same
+      Placement Manager using two separate Lightbox destinations.
+    </p>
+
+    <div class="test-summary">
+      <h2>Test configuration</h2>
+
+      <ul>
+        <li>
+          Destination 1 should use the Page Load trigger and appear
+          immediately.
+        </li>
+
+        <li>
+          Destination 2 should use a Scroll trigger and remain hidden
+          until the configured scroll depth is reached.
+        </li>
+
+        <li>
+          Both destinations should belong to the same campaign and the
+          same Placement Manager.
+        </li>
+
+        <li>
+          Configure each destination with a different position, size or
+          transparency so they can be distinguished.
+        </li>
+      </ul>
+    </div>
+
+    <div class="page-links">
+      <a href="#scroll-25">
+        Go to approximately 25%
+      </a>
+
+      <a href="#scroll-50">
+        Go to approximately 50%
+      </a>
+
+      <a href="#scroll-75">
+        Go to approximately 75%
+      </a>
+
+      <a href="#page-bottom">
+        Go to the bottom
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section id="section-one">
+      <h2>Section 1 — Top of page</h2>
+
+      <p>
+        The Page Load Lightbox should be visible shortly after this page
+        loads.
+      </p>
+
+      <p>
+        The Scroll Lightbox should not be visible yet unless its
+        configured scroll threshold has already been reached.
+      </p>
+
+      <p>
+        Lemon drops candy cake oat cake ice cream cake apple pie.
+        Tiramisu cheesecake jujubes topping jujubes bear claw. Sweet
+        roll candy canes croissant tiramisu toffee cake candy canes.
+      </p>
+    </section>
+
+    <section id="scroll-25">
+      <h2>Section 2 — Approximately 25%</h2>
+
+      <div class="scroll-marker">
+        25% scroll test marker
+      </div>
+
+      <p>
+        Continue scrolling if the second Lightbox has been configured
+        with a threshold greater than 25%.
+      </p>
+
+      <p>
+        Cheesecake muffin lollipop pastry. Soufflé sugar plum caramels
+        cupcake toffee cotton candy cupcake gummi bears dragée.
+      </p>
+    </section>
+
+    <section id="section-three">
+      <h2>Section 3 — Before the middle</h2>
+
+      <p>
+        This section adds enough page height to test a scroll-triggered
+        Lightbox accurately.
+      </p>
+
+      <p>
+        Jelly-o chocolate cake chocolate bar sesame snaps sugar plum.
+        Marzipan cake dragée soufflé apple pie tiramisu.
+      </p>
+    </section>
+
+    <section id="scroll-50">
+      <h2>Section 4 — Approximately 50%</h2>
+
+      <div class="scroll-marker">
+        50% scroll test marker
+      </div>
+
+      <p>
+        If Destination 2 uses a 50% scroll trigger, it should appear
+        around this point.
+      </p>
+
+      <p>
+        Confirm that Destination 1 and Destination 2 retain their own
+        position, size, transparency and close behaviour.
+      </p>
+    </section>
+
+    <section id="section-five">
+      <h2>Section 5 — After the middle</h2>
+
+      <p>
+        If the Scroll Lightbox has not appeared, continue scrolling
+        towards the 75% marker.
+      </p>
+
+      <p>
+        Brownie pudding macaroon chocolate bar cookie. Donut jelly beans
+        pastry chocolate cake fruitcake.
+      </p>
+    </section>
+
+    <section id="scroll-75">
+      <h2>Section 6 — Approximately 75%</h2>
+
+      <div class="scroll-marker">
+        75% scroll test marker
+      </div>
+
+      <p>
+        A destination configured with a 75% scroll trigger should appear
+        around this point.
+      </p>
+
+      <p>
+        Check that the Page Load destination and Scroll destination are
+        operating independently even though they belong to the same
+        campaign.
+      </p>
+    </section>
+
+    <section id="section-seven">
+      <h2>Section 7 — Lower page</h2>
+
+      <p>
+        Use this section to continue testing scrolling, Lightbox
+        positioning and closing behaviour.
+      </p>
+
+      <p>
+        Closing one Lightbox should not unintentionally close the other.
+      </p>
+    </section>
+
+    <section id="page-bottom">
+      <h2>Section 8 — Bottom of page</h2>
+
+      <p>
+        This is the end of the same-campaign multiple-destinations test
+        page.
+      </p>
+
+      <p>
+        Refresh the page to repeat the Page Load and Scroll trigger
+        checks.
+      </p>
+
+      <p>
+        <a href="#page-top">
+          Return to the top
+        </a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    Same Campaign Multiple Destinations Test Page
+  </footer>
+
+  <script>
+    window.foobar = 'foo';
+    window.testing = 122;
+
+    console.log(
+      'Same campaign multiple destinations parent page loaded'
+    );
+  </script>
+</body>
+</html>
