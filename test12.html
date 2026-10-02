@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Placement Manager Unpublish and Republish Test</title>
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: navajowhite;
+      color: #222222;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 24px;
+      background-color: #ffffff;
+      border-bottom: 2px solid #333333;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    section {
+      min-height: 500px;
+      margin-bottom: 32px;
+      padding: 24px;
+      background-color: rgba(255, 255, 255, 0.65);
+      border: 2px dashed #76552b;
+      border-radius: 8px;
+    }
+
+    .test-configuration {
+      min-height: auto;
+      background-color: #fff5dc;
+      border-style: solid;
+    }
+
+    .page-links {
+      margin-top: 16px;
+    }
+
+    .page-links a {
+      display: inline-block;
+      margin-right: 16px;
+      margin-bottom: 8px;
+    }
+
+    footer {
+      padding: 24px;
+      background-color: #ffffff;
+      border-top: 2px solid #333333;
+      text-align: center;
+    }
+  </style>
+
+  <!--
+    Reports when the Placement Manager adds Lightbox campaign scripts.
+  -->
+  <script>
+    const campaignScriptObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType !== Node.ELEMENT_NODE) {
+            continue;
+          }
+
+          if (
+            node.tagName === 'SCRIPT' &&
+            node.src?.includes('/lightbox/')
+          ) {
+            console.log(
+              'LIGHTBOX SCRIPT ADDED:',
+              node.src
+            );
+          }
+        }
+      }
+    });
+
+    campaignScriptObserver.observe(document.documentElement, {
+      childList: true,
+      subtree: true
+    });
+
+    console.log('LIGHTBOX SCRIPT OBSERVER STARTED');
+  </script>
+
+  <!-- One-time Placement Manager code -->
+  <script
+    src="https://d1-displayx.ngx.dev/manager/5c8bb1a0-d490-45dd-9d76-94c1328188b1"
+    onload="console.log('PLACEMENT MANAGER SCRIPT LOADED')"
+    onerror="console.error('PLACEMENT MANAGER SCRIPT FAILED TO LOAD')"
+  ></script>
+</head>
+
+<body>
+  <header>
+    <h1 id="page-top">
+      Placement Manager Unpublish and Republish Test
+    </h1>
+
+    <p>
+      This page tests whether existing Lightbox destinations continue
+      working after they are unpublished and republished.
+    </p>
+
+    <div class="page-links">
+      <a href="#section-one">Go to the top section</a>
+      <a href="#section-three">Go to the middle</a>
+      <a href="#section-five">Go to the bottom</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="test-configuration">
+      <h2>Test configuration</h2>
+
+      <ul>
+        <li>
+          Lightbox A remains Published throughout the test and acts as
+          the control.
+        </li>
+
+        <li>
+          Lightbox B is unpublished and then the same destination is
+          republished.
+        </li>
+
+        <li>
+          Lightbox C is unpublished and then the same destination is
+          republished.
+        </li>
+
+        <li>
+          All three destinations are assigned to the same Placement
+          Manager.
+        </li>
+
+        <li>
+          Configure each Lightbox with different content and a different
+          position so they can be identified.
+        </li>
+      </ul>
+    </section>
+
+    <section id="section-one">
+      <h2>Section 1 — Top of page</h2>
+
+      <p>
+        All three Lightboxes should initially appear when configured
+        with the Page Load trigger.
+      </p>
+
+      <p>
+        Give each Lightbox a visible identifier such as A, B or C so
+        that its publishing state can be verified.
+      </p>
+    </section>
+
+    <section id="section-two">
+      <h2>Section 2 — First scroll area</h2>
+
+      <p>
+        This section provides additional page height in case one of the
+        Lightboxes needs to be tested with a scroll trigger later.
+      </p>
+
+      <p>
+        Cheesecake muffin lollipop pastry. Soufflé sugar plum caramels,
+        cupcake, toffee and cotton candy.
+      </p>
+    </section>
+
+    <section id="section-three">
+      <h2>Section 3 — Middle of page</h2>
+
+      <p>
+        After Lightboxes B and C are unpublished, only control
+        Lightbox A should continue to display.
+      </p>
+
+      <p>
+        The Placement Manager loader must continue to return
+        successfully while A remains Published.
+      </p>
+    </section>
+
+    <section id="section-four">
+      <h2>Section 4 — Republish verification</h2>
+
+      <p>
+        After republishing the same B and C destinations, all three
+        Lightboxes should display again.
+      </p>
+
+      <p>
+        Their Placement Manager assignments, triggers, Test Mode,
+        design settings and destination IDs should remain unchanged.
+      </p>
+    </section>
+
+    <section id="section-five">
+      <h2>Section 5 — Bottom of page</h2>
+
+      <p>
+        Check the browser Console and Network panels for the Placement
+        Manager request and each Lightbox destination request.
+      </p>
+
+      <p>
+        <a href="#page-top">Return to the top</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    Placement Manager Unpublish and Republish Test Page
+  </footer>
+
+  <script>
+    window.foobar = 'foo';
+    window.testing = 122;
+
+    console.log('PARENT PAGE LOADED');
+  </script>
+</body>
+</html>
