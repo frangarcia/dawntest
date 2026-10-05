@@ -8,7 +8,7 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Publishing Manager Display and API Test</title>
+  <title>Publishing Manager Custom Message API Test</title>
 
   <style>
     html {
@@ -112,40 +112,76 @@
     console.log('OBSERVER STARTED');
   </script>
 
- <!-- Privacy Consent API distribution test -->
-<script>
-  window.ngxReadyMicro = function () {
-    console.log('PARENT: NGX READY');
+  <!-- Custom Message API test -->
+  <script>
+    window.ngxUnitIds = [];
 
-    NGX.api(
-      'event:listen',
-      'page:ready',
-      function (info) {
-        console.log(
-          'PARENT> page:ready, info:',
-          info
-        );
+    window.ngxReadyMicro = function () {
+      console.log('PARENT: NGX READY');
 
-        const consent = {
-          necessary: true,
-          functional: true,
-          analytics: true,
-          marketing: true
+      NGX.api(
+        'event:listen',
+        'page:ready',
+        function (info) {
+          console.log(
+            'PARENT: PUBLISHING UNIT READY:',
+            info.id,
+            info
+          );
+
+          if (!window.ngxUnitIds.includes(info.id)) {
+            window.ngxUnitIds.push(info.id);
+          }
+
+          console.log(
+            'PARENT: CURRENT UNIT IDS:',
+            window.ngxUnitIds
+          );
+        }
+      );
+
+      window.sendBroadcastMessage = function (label) {
+        const message = {
+          testType: 'broadcast',
+          label: label || 'broadcast-test',
+          sentAt: new Date().toISOString()
         };
 
-        NGX.api(
-          'privacy:set:consent',
-          consent
+        console.log(
+          'PARENT: SENDING BROADCAST:',
+          message
         );
 
-        console.log(
-          'PARENT> privacy consent sent:',
-          consent
+        NGX.api(
+          'embed:send:message',
+          message
         );
-      }
-    );
-  };
-</script>
+      };
+
+      window.sendTargetedMessage = function (
+        targetId,
+        label
+      ) {
+        const message = {
+          testType: 'targeted',
+          label: label || 'targeted-test',
+          targetId: targetId,
+          sentAt: new Date().toISOString()
+        };
+
+        console.log(
+          'PARENT: SENDING TARGETED MESSAGE:',
+          message
+        );
+
+        NGX.api(
+          'embed:send:message',
+          message,
+          targetId
+        );
+      };
+    };
+  </script>
 
   <!-- One-time Publishing Manager code -->
   <script
@@ -156,12 +192,13 @@
 <body>
   <header>
     <h1 id="my-title">
-      Publishing Manager Display and API Test
+      Publishing Manager Custom Message API Test
     </h1>
 
     <p>
-      This page tests multiple Lightboxes and Web Embeds loaded through
-      a Publishing Manager, including Customer ID API distribution.
+      This page tests custom-message broadcasts and targeted messages
+      across multiple Lightboxes and Web Embeds loaded through a
+      Publishing Manager.
     </p>
 
     <div class="page-links">
@@ -193,15 +230,13 @@
       <h2>Section 1 — Top of page</h2>
 
       <p>
-        Ant's Test: Lemon drops candy cake oat cake ice cream cake apple
-        pie. Tiramisu cheesecake jujubes topping jujubes bear claw.
-        Sweet roll candy canes croissant tiramisu toffee cake candy
-        canes.
+        This section provides content near the top of the page for
+        testing Lightboxes using Page Load and timed triggers.
       </p>
 
       <p>
-        This section provides content near the top of the page for
-        testing Lightboxes using Page Load and timed triggers.
+        Open DevTools Console to view publishing-unit IDs, broadcasts
+        and targeted custom messages.
       </p>
     </section>
 
@@ -221,11 +256,11 @@
     </section>
 
     <section id="horizontal-embed-section">
-      <h2>Horizontal Web Embed — Prepend</h2>
+      <h2>Web Embed — Prepend</h2>
 
       <p>
-        The horizontal Web Embed should be inserted as the first child
-        inside the target below.
+        The Web Embed should be inserted as the first child inside the
+        target below.
       </p>
 
       <div id="prepend-target" class="target">
@@ -288,8 +323,8 @@
       <h2>Section 2 — First scroll area</h2>
 
       <p>
-        Cheesecake muffin lollipop pastry. Soufflé sugar plum caramels
-        cupcake toffee cotton candy cupcake gummi bears dragée.
+        Cheesecake muffin lollipop pastry. Soufflé sugar plum caramels,
+        cupcake, toffee, cotton candy, gummi bears and dragée.
       </p>
 
       <p>
@@ -316,13 +351,13 @@
       <h2>Section 4 — Lower scroll area</h2>
 
       <p>
-        Brownie pudding macaroon chocolate bar cookie. Donut jelly beans
-        pastry chocolate cake fruitcake.
+        Brownie pudding macaroon chocolate bar cookie. Donut jelly beans,
+        pastry, chocolate cake and fruitcake.
       </p>
 
       <p>
-        Continue scrolling to test Lightboxes configured to open farther
-        down the page.
+        Continue scrolling to test delayed or scroll-triggered
+        Lightboxes receiving custom messages.
       </p>
     </section>
 
@@ -330,13 +365,13 @@
       <h2>Section 5 — Bottom of page</h2>
 
       <p>
-        This is the final section of the Publishing Manager Display Test
-        page.
+        This is the final section of the Publishing Manager Custom
+        Message API Test page.
       </p>
 
       <p>
-        Return to the top or refresh the page to repeat trigger,
-        targeting, frequency-cap and Test Mode checks.
+        Return to the top or refresh the page to repeat broadcast,
+        targeted-message and delayed-loading tests.
       </p>
 
       <p>
@@ -346,7 +381,7 @@
   </main>
 
   <footer>
-    Publishing Manager Display and API Test Page
+    Publishing Manager Custom Message API Test Page
   </footer>
 
   <script>
