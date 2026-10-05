@@ -116,29 +116,13 @@
   <script>
     window.ngxUnitIds = [];
 
+    const delayedCccId =
+      'ngxFrame8b127fd0-24ad-4af2-a836-92a500d14743';
+
+    let delayedCccMessageScheduled = false;
+
     window.ngxReadyMicro = function () {
       console.log('PARENT: NGX READY');
-
-      NGX.api(
-        'event:listen',
-        'page:ready',
-        function (info) {
-          console.log(
-            'PARENT: PUBLISHING UNIT READY:',
-            info.id,
-            info
-          );
-
-          if (!window.ngxUnitIds.includes(info.id)) {
-            window.ngxUnitIds.push(info.id);
-          }
-
-          console.log(
-            'PARENT: CURRENT UNIT IDS:',
-            window.ngxUnitIds
-          );
-        }
-      );
 
       window.sendBroadcastMessage = function (label) {
         const message = {
@@ -180,6 +164,46 @@
           targetId
         );
       };
+
+      NGX.api(
+        'event:listen',
+        'page:ready',
+        function (info) {
+          console.log(
+            'PARENT: PUBLISHING UNIT READY:',
+            info.id,
+            info
+          );
+
+          if (!window.ngxUnitIds.includes(info.id)) {
+            window.ngxUnitIds.push(info.id);
+          }
+
+          console.log(
+            'PARENT: CURRENT UNIT IDS:',
+            window.ngxUnitIds
+          );
+
+          if (
+            info.id === delayedCccId &&
+            !delayedCccMessageScheduled
+          ) {
+            delayedCccMessageScheduled = true;
+
+            console.log(
+              'PARENT: CCC READY — TARGETED MESSAGE ' +
+              'WILL BE SENT IN 12 SECONDS'
+            );
+
+            setTimeout(function () {
+              window.sendTargetedMessage(
+                info.id,
+                'delayed-CCC-auto-test'
+              );
+            }, 12000);
+          }
+        }
+      );
     };
   </script>
 
