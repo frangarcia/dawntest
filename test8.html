@@ -2,13 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>Publishing Manager Display Test</title>
+  <title>Lightbox Control and Re-evaluation API Test</title>
 
   <style>
     html {
@@ -45,6 +41,28 @@
       border-radius: 8px;
     }
 
+    .test-controls {
+      padding: 16px;
+      background-color: #fff5dc;
+      border: 2px solid #76552b;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .first-link {
+      display: inline-block;
+      padding: 12px 20px;
+      background-color: #222222;
+      color: #ffffff;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+
+    .first-link:focus-visible {
+      outline: 3px solid #005fcc;
+      outline-offset: 4px;
+    }
+
     .page-links {
       margin-top: 16px;
     }
@@ -67,6 +85,10 @@
       background-color: #fff5dc;
     }
 
+    code {
+      overflow-wrap: anywhere;
+    }
+
     footer {
       padding: 24px;
       background-color: #ffffff;
@@ -75,37 +97,76 @@
     }
   </style>
 
-  <!-- One-time Publishing Manager code -->
-  <script src="https://d1-displayx.ngx.dev/manager/290fe746-3e4d-402e-93bc-e326324902a1"></script>
+  <!-- Initial values must be defined before Grow loads. -->
+  <script>
+    window.test = false;
+
+    window.DZMP = {
+      site_score: 0
+    };
+
+    window.foobar = 'foo';
+    window.testing = 122;
+
+    window.ngxReadyMicro = function () {
+      console.log('QA: Grow API ready');
+    };
+  </script>
+
+  <!-- One-time Q1 Placement Manager code -->
+  <script src="https://q1-displayx.ngx.dev/manager/8bf38e6e-5b96-4a19-96c5-5a74c51746c4"></script>
 </head>
 
 <body>
   <header>
-    <h1 id="my-title">Publishing Manager Display Test</h1>
+    <h1 id="my-title">
+      Lightbox Control and Re-evaluation API Test
+    </h1>
 
     <p>
-      This page is used to test multiple Lightboxes and Web Embeds
-      loaded through a Publishing Manager.
+      Use this parent page to test Lightbox opening, closing,
+      display-rule re-evaluation, triggers and route changes.
     </p>
 
+    <p>
+      For destinations using Test Mode, add
+      <code>?NGX_PM_TEST</code> to the page URL.
+      Use <code>&amp;NGX_PM_TEST</code> if other parameters already exist.
+    </p>
+
+    <div class="test-controls">
+      <h2>Click-trigger test</h2>
+
+      <p>
+        Configure the Lightbox Click selector as
+        <code>.first-link</code>.
+      </p>
+
+      <a id="my-link" class="first-link" href="#">
+        Click this link to open a lightbox
+      </a>
+
+      <p>
+        This link does not manually call the Grow API.
+        The destination's configured Click trigger should handle it.
+      </p>
+    </div>
+
     <div class="page-links">
-      <a
-        id="my-link"
-        href="test4.html?from=test8&foo=bar"
-      >
+      <a href="test4.html?from=test8&amp;foo=bar">
         Go to test 4
       </a>
 
       <a
         class="page-link"
-        href="test4.html?from=test8&utm_campaign=foo1&utm_source=foo2&utm_content=foo3&utm_term=foo4&utm_medium=foo5"
+        href="test4.html?from=test8&amp;utm_campaign=foo1&amp;utm_source=foo2&amp;utm_content=foo3&amp;utm_term=foo4&amp;utm_medium=foo5"
       >
         Go to test 4 with UTM parameters
       </a>
 
       <a
         class="page-link foo"
-        href="test5.html?from=test8&foo=basbat&abcdef=xyz"
+        href="test5.html?from=test8&amp;foo=basbat&amp;abcdef=xyz"
       >
         Go to test 5
       </a>
@@ -114,18 +175,40 @@
 
   <main>
     <section id="section-one">
-      <h2>Section 1 — Top of page</h2>
+      <h2>Section 1 — Variable and API tests</h2>
 
       <p>
-        Ant's Test: Lemon drops candy cake oat cake ice cream cake apple
-        pie. Tiramisu cheesecake jujubes topping jujubes bear claw.
-        Sweet roll candy canes croissant tiramisu toffee cake candy
-        canes.
+        The page starts with <code>window.test = false</code>
+        and <code>window.DZMP.site_score = 0</code>.
+        Refreshing resets these JavaScript values.
       </p>
 
       <p>
-        This section provides content near the top of the page for
-        testing Lightboxes using Page Load and timed triggers.
+        For the basic test, configure a Lightbox with a Page Load
+        trigger and a JavaScript Variable rule:
+        <code>test</code> equals <code>true</code>.
+      </p>
+
+      <p>
+        Once the Console shows <code>QA: Grow API ready</code>,
+        run:
+      </p>
+
+      <pre><code>test = true;
+NGX.api('evaluate:display:rules');</code></pre>
+
+      <p>
+        For the nested-variable test, configure a rule:
+        <code>DZMP.site_score</code> greater than <code>10</code>.
+        Then run:
+      </p>
+
+      <pre><code>DZMP.site_score = 11;
+NGX.api('evaluate:display:rules');</code></pre>
+
+      <p>
+        Refresh between independent test scenarios.
+        Refreshing does not clear frequency-cap or consent storage.
       </p>
     </section>
 
@@ -133,23 +216,21 @@
       <h2>Adaptive Web Embed — Append</h2>
 
       <p>
-        The adaptive Web Embed should be inserted as the final child
-        inside the target below.
+        Optional embed target. Append should insert the experience
+        after the existing content.
       </p>
 
       <div id="append-target" class="target">
-        <p>
-          Existing content before the appended Web Embed.
-        </p>
+        <p>Existing content before the appended Web Embed.</p>
       </div>
     </section>
 
     <section id="horizontal-embed-section">
-      <h2>Horizontal Web Embed — Prepend</h2>
+      <h2>Web Embed — Prepend</h2>
 
       <p>
-        The horizontal Web Embed should be inserted as the first child
-        inside the target below.
+        Optional embed target. Prepend should insert the experience
+        before the existing content.
       </p>
 
       <div id="prepend-target" class="target">
@@ -162,13 +243,11 @@
       <h2>Before and After insertion test</h2>
 
       <p>
-        This target can be used to test the Before and After insertion
-        methods.
+        Optional target for testing insertion outside an element.
       </p>
 
       <div id="before-after-target" class="target">
-        This is the target element. The Web Embed should appear outside
-        this element when using Before or After.
+        Before and After embeds should appear outside this target.
       </div>
     </section>
 
@@ -176,14 +255,11 @@
       <h2>Fixed Web Embed</h2>
 
       <p>
-        The fixed-size Web Embed should retain its configured width and
-        height.
+        A fixed-size Web Embed should retain its configured dimensions.
       </p>
 
       <div id="fixed-target" class="target">
-        <p>
-          The fixed-size Web Embed should appear inside this element.
-        </p>
+        <p>The fixed-size Web Embed should appear inside this element.</p>
       </div>
     </section>
 
@@ -191,9 +267,8 @@
       <h2>Multiple Selector Match 1</h2>
 
       <p>
-        This section shares the
-        <code>.multiple-selector</code>
-        class with another section.
+        This is the first element matching
+        <code>.multiple-selector</code>.
       </p>
     </section>
 
@@ -201,52 +276,95 @@
       <h2>Multiple Selector Match 2</h2>
 
       <p>
-        Use
-        <code>.multiple-selector</code>
-        as the CSS selector to test what happens when multiple elements
-        match.
+        This is the second element matching
+        <code>.multiple-selector</code>.
       </p>
     </section>
 
     <section id="section-two">
-      <h2>Section 2 — First scroll area</h2>
+      <h2>Section 2 — Scroll trigger tests</h2>
 
       <p>
-        Cheesecake muffin lollipop pastry. Soufflé sugar plum caramels
-        cupcake toffee cotton candy cupcake gummi bears dragée.
+        Configure the Scroll Lightbox threshold to 25%
+        and add the rule <code>test</code> equals <code>true</code>.
       </p>
 
       <p>
-        Scroll through this section to test Lightboxes configured with
-        scroll-depth triggers.
+        Test making the rule pass before reaching the threshold,
+        and reaching the threshold while the rule still fails.
+      </p>
+
+      <p>
+        The percentage applies to the whole parent page.
+        This section is only a visual landmark, not the 25% marker.
+      </p>
+
+      <p>
+        Cheesecake muffin lollipop pastry. Soufflé sugar plum
+        caramels, cupcake, toffee, cotton candy and gummi bears.
       </p>
     </section>
 
     <section id="section-three">
-      <h2>Section 3 — Middle of page</h2>
+      <h2>Section 3 — SPA route tests</h2>
 
       <p>
-        Jelly-o chocolate cake chocolate bar sesame snaps sugar plum.
-        Marzipan cake dragée soufflé apple pie tiramisu.
+        Configure one Lightbox with Current Page URL containing
+        <code>qaRoute=first</code>, and another containing
+        <code>qaRoute=second</code>.
       </p>
 
       <p>
-        This section helps make the page tall enough to test different
-        scroll-depth percentages.
+        Run this in the Console to change the URL without reloading.
+        It preserves the current path and Test Mode parameter.
       </p>
+
+      <pre><code>var qaRouteUrl = new URL(location.href);
+qaRouteUrl.searchParams.set('qaRoute', 'first');
+history.pushState({}, '', qaRouteUrl);
+NGX.api('evaluate:display:rules');</code></pre>
+
+      <p>Close the first Lightbox, then switch routes:</p>
+
+      <pre><code>NGX.api('lightbox:close');
+
+var qaRouteUrl = new URL(location.href);
+qaRouteUrl.searchParams.set('qaRoute', 'second');
+history.pushState({}, '', qaRouteUrl);
+NGX.api('evaluate:display:rules');</code></pre>
+
+      <p>
+        To remove the test route:
+      </p>
+
+      <pre><code>var qaRouteUrl = new URL(location.href);
+qaRouteUrl.searchParams.delete('qaRoute');
+history.pushState({}, '', qaRouteUrl);
+NGX.api('evaluate:display:rules');</code></pre>
     </section>
 
     <section id="section-four">
-      <h2>Section 4 — Lower scroll area</h2>
+      <h2>Section 4 — Timer and slow-loading tests</h2>
 
       <p>
-        Brownie pudding macaroon chocolate bar cookie. Donut jelly beans
-        pastry chocolate cake fruitcake.
+        Configure timer values in the publishing destination editor.
+        This page does not implement its own Lightbox timers.
       </p>
 
       <p>
-        Continue scrolling to test Lightboxes configured to open farther
-        down the page.
+        For the 30-second Total Time test, compare re-evaluation
+        before the timer is reached and after it has already elapsed.
+      </p>
+
+      <p>
+        For queued-click and privacy tests, use DevTools network
+        throttling as described in the QA notes. Restore
+        No throttling afterwards.
+      </p>
+
+      <p>
+        Brownie pudding macaroon chocolate bar cookie.
+        Donut jelly beans pastry chocolate cake fruitcake.
       </p>
     </section>
 
@@ -254,14 +372,20 @@
       <h2>Section 5 — Bottom of page</h2>
 
       <p>
-        This is the final section of the Publishing Manager Display Test
-        page.
+        Use this section to scroll past the configured threshold,
+        then return to the top before re-evaluating the rules.
       </p>
 
       <p>
-        Return to the top or refresh the page to repeat trigger,
-        targeting, frequency-cap and Test Mode checks.
+        Use the full iframe ID, including <code>ngxFrame</code>,
+        when targeting an individual Lightbox through the API.
       </p>
+
+      <p>
+        Close all open Lightboxes:
+      </p>
+
+      <pre><code>NGX.api('lightbox:close');</code></pre>
 
       <p>
         <a href="#my-title">Return to the top</a>
@@ -270,14 +394,11 @@
   </main>
 
   <footer>
-    Publishing Manager Display Test Page
+    Lightbox Control and Re-evaluation API Test — test8
   </footer>
 
   <script>
-    window.foobar = 'foo';
-    window.testing = 122;
-
-    console.log('Publishing Manager parent page loaded');
+    console.log('QA: test8 parent page loaded');
   </script>
 </body>
 </html>
