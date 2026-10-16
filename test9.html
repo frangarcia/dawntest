@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Placement Manager Lightbox Trigger Test</title>
+  <title>Placement Manager Order and Trigger Test</title>
 
   <style>
     html {
@@ -78,6 +78,10 @@
       background-color: #fff5dc;
     }
 
+    code {
+      overflow-wrap: anywhere;
+    }
+
     footer {
       padding: 24px;
       background-color: #ffffff;
@@ -89,25 +93,144 @@
   <script>
     window.foobar = 'foo';
     window.testing = 122;
+
+    // Observe destination scripts BEFORE loading the manager.
+    (function () {
+      var startedAt = performance.now();
+      var addedCount = 0;
+
+      var labels = {
+        '02cc': 'Inactive 10',
+        '9f76': 'Embed',
+        'b87a': 'On Scroll',
+        'de9f': 'On Click',
+        '5e10': 'Exit Intent',
+        '8207': 'Total Time'
+      };
+
+      function elapsed() {
+        return ((performance.now() - startedAt) / 1000).toFixed(3);
+      }
+
+      new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          mutation.addedNodes.forEach(function (node) {
+            if (node.tagName !== 'SCRIPT' || !node.src) {
+              return;
+            }
+
+            var match = node.src.match(
+              /\/(embed|lightbox)\/([0-9a-f-]+)/i
+            );
+
+            if (!match) {
+              return;
+            }
+
+            var type = match[1];
+            var containerId = match[2];
+            var shortId = containerId.slice(0, 4);
+            var label = labels[shortId] || containerId;
+
+            addedCount += 1;
+            var insertionNumber = addedCount;
+
+            console.log(
+              '%cadded #%s | %ss | %s | %s | %s',
+              'color:#087f23;font-weight:bold',
+              insertionNumber,
+              elapsed(),
+              type,
+              shortId,
+              label
+            );
+
+            node.addEventListener('load', function () {
+              console.log(
+                'ran   #%s | %ss | %s | %s | %s',
+                insertionNumber,
+                elapsed(),
+                type,
+                shortId,
+                label
+              );
+            });
+
+            node.addEventListener('error', function () {
+              console.error(
+                'FAILED #%s | %ss | %s | %s',
+                insertionNumber,
+                elapsed(),
+                label,
+                node.src
+              );
+            });
+          });
+        });
+      }).observe(document.documentElement, {
+        childList: true,
+        subtree: true
+      });
+
+      console.log(
+        'QA: observer started; waiting for destination scripts'
+      );
+
+      document.addEventListener('DOMContentLoaded', function () {
+        console.log(
+          'QA: DOM ready at %ss; prepend target exists: %s',
+          elapsed(),
+          Boolean(document.getElementById('prepend-target'))
+        );
+      });
+    })();
   </script>
 
-  <!-- One-time Placement Manager code -->
+  <!-- Keep the manager in HEAD, above the Embed target. -->
   <script src="https://r-x.ngx.dev/manager/f32345e9-1b88-4031-95fe-f404af9559a7"></script>
+
+  <!--
+    Deliberately delays parsing before BODY and #prepend-target exist.
+    Keep this here for the delayed-target ordering test.
+    Remove this script for the normal-speed regression check.
+  -->
+  <script src="https://httpbin.org/delay/3"></script>
+
+  <script>
+    console.log(
+      'QA: parsing delay finished; prepend target exists:',
+      Boolean(document.getElementById('prepend-target'))
+    );
+  </script>
 </head>
 
 <body>
   <header>
-    <h1 id="my-title">Placement Manager Lightbox Trigger Test</h1>
+    <h1 id="my-title">
+      Placement Manager Order and Trigger Test
+    </h1>
 
     <p>
-      This page tests Exit Intent, On Click, On Scroll,
-      Inactive Time and Total Time lightboxes.
+      This page tests campaign script order when the Placement Manager
+      loads before the Web Embed target exists.
     </p>
 
     <p>
-      If the destinations use Test Mode, add
+      Expected saved order:
+      Inactive 10 → Embed → On Scroll → On Click →
+      Exit Intent → Total Time.
+    </p>
+
+    <p>
+      Check the Console messages labelled <strong>added</strong>
+      and <strong>ran</strong>.
+      Script loading order is separate from visible Lightbox opening.
+    </p>
+
+    <p>
+      For the initial comparison, disable Test Mode on all destinations.
+      For the later Test Mode check, add
       <code>?NGX_PM_TEST</code> to this page's URL.
-      Use <code>&amp;NGX_PM_TEST</code> if other parameters already exist.
     </p>
 
     <button id="lightbox-click-test" type="button">
@@ -115,26 +238,25 @@
     </button>
 
     <p>
-      Configure the On Click destination's selector as
+      The On Click destination should use
       <code>#lightbox-click-test</code>.
-      This button does not navigate away or manually call the Grow API.
     </p>
 
     <div class="page-links">
-      <a id="my-link" href="test4.html?from=lightbox-test&amp;foo=bar">
+      <a id="my-link" href="test4.html?from=test9&amp;foo=bar">
         Go to test 4
       </a>
 
       <a
         class="page-link"
-        href="test4.html?from=lightbox-test&amp;utm_campaign=foo1&amp;utm_source=foo2&amp;utm_content=foo3&amp;utm_term=foo4&amp;utm_medium=foo5"
+        href="test4.html?from=test9&amp;utm_campaign=foo1&amp;utm_source=foo2&amp;utm_content=foo3&amp;utm_term=foo4&amp;utm_medium=foo5"
       >
         Go to test 4 with UTM parameters
       </a>
 
       <a
         class="page-link foo"
-        href="test5.html?from=lightbox-test&amp;foo=basbat&amp;abcdef=xyz"
+        href="test5.html?from=test9&amp;foo=basbat&amp;abcdef=xyz"
       >
         Go to test 5
       </a>
@@ -156,7 +278,7 @@
         </li>
         <li>
           <strong>On Scroll:</strong>
-          Scroll the parent page past the destination's configured threshold.
+          Scroll the parent page past the configured threshold.
         </li>
         <li>
           <strong>Inactive Time:</strong>
@@ -169,49 +291,50 @@
       </ul>
 
       <p>
-        Suggested settings: On Scroll at 50%, Inactive Time at
+        Existing settings: On Scroll at 50%, Inactive Time at
         10 seconds and Total Time at 20 seconds.
-        Configure these in the publishing destination editor.
+        Confirm these in the publishing destination editor.
       </p>
 
       <p>
-        Refresh between scenarios. Scroll inside the parent page,
-        rather than inside an open lightbox, when testing On Scroll.
+        Mixed Embed/Lightbox pages may start Lightbox timers later
+        while waiting for the Embed target. Record the timing
+        separately from the ordering result.
       </p>
     </section>
 
     <section id="adaptive-embed-section">
-      <h2>Adaptive Web Embed — Append</h2>
-
-      <p>
-        Optional embed target: append should insert the experience
-        after the existing content.
-      </p>
+      <h2>Adaptive Web Embed — Append target</h2>
 
       <div id="append-target" class="target">
-        <p>Existing content before the appended Web Embed.</p>
+        <p>Existing content before an appended Web Embed.</p>
       </div>
     </section>
 
     <section id="horizontal-embed-section">
-      <h2>Web Embed — Prepend</h2>
+      <h2>Web Embed — Prepend target used for this test</h2>
 
       <p>
-        Optional embed target: prepend should insert the experience
-        before the existing content.
+        Configure the existing Embed with selector
+        <code>#prepend-target</code> and insertion method
+        <strong>Prepend</strong>.
       </p>
 
       <div id="prepend-target" class="target">
         <p>Existing first child.</p>
         <p>Existing second child.</p>
       </div>
+
+      <script>
+        console.log('QA: #prepend-target has now been parsed');
+      </script>
     </section>
 
     <section id="before-after-section">
       <h2>Before and After insertion test</h2>
 
       <div id="before-after-target" class="target">
-        Before and After embeds should appear outside this target element.
+        Before and After embeds should appear outside this target.
       </div>
     </section>
 
@@ -226,16 +349,14 @@
     <section class="multiple-selector">
       <h2>Multiple Selector Match 1</h2>
       <p>
-        This is the first element matching
-        <code>.multiple-selector</code>.
+        First element matching <code>.multiple-selector</code>.
       </p>
     </section>
 
     <section class="multiple-selector">
       <h2>Multiple Selector Match 2</h2>
       <p>
-        This is the second element matching
-        <code>.multiple-selector</code>.
+        Second element matching <code>.multiple-selector</code>.
       </p>
     </section>
 
@@ -255,8 +376,7 @@
         Marzipan dragée soufflé apple pie tiramisu.
       </p>
       <p>
-        Section headings are visual landmarks; use the configured
-        scroll percentage to judge when the lightbox should open.
+        These sections are landmarks, not exact scroll-percentage markers.
       </p>
     </section>
 
@@ -271,19 +391,17 @@
 
     <section id="section-five">
       <h2>Section 5 — Bottom of page</h2>
-      <p>
-        Return to the top or refresh to repeat the trigger tests.
-      </p>
+      <p>Refresh to repeat the ordering and trigger checks.</p>
       <p><a href="#my-title">Return to the top</a></p>
     </section>
   </main>
 
   <footer>
-    Placement Manager Lightbox Trigger Test Page
+    Placement Manager Order and Trigger Test — test9
   </footer>
 
   <script>
-    console.log('Placement Manager parent page loaded');
+    console.log('QA: parent page body finished parsing');
   </script>
 </body>
 </html>
