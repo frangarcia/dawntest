@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Lightbox</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Standalone Lightbox API Test</title>
+
+  <script>
+    window.test = false;
+
+    window.ngxReadyMicro = function () {
+      console.log('QA: Grow API ready');
+    };
+  </script>
+
+  <script src="https://q1-displayx.ngx.dev/lightbox/2f95f3b4-50c6-42dd-8432-0127ee7a1e13?mode=adaptive"></script>
+  <script src="https://q1-displayx.ngx.dev/lightbox/4b47239b-d49b-4289-8457-6ae959192aab?mode=adaptive"></script>
 </head>
 <body>
-<script src="https://d3-displayx.ngx.dev/lightbox/2ddac5a1-c6cf-440d-9c6e-68a4efd1635d?mode=adaptive"></script>
+  <h1>Standalone Lightbox API Test</h1>
+  <p>Open DevTools Console to run the API tests.</p>
 </body>
 </html>
