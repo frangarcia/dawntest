@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Lightbox Control and Re-evaluation API Test</title>
+  <title>Lightbox API and Campaign Activity Test — test8</title>
 
   <style>
     html {
@@ -89,11 +89,85 @@
       overflow-wrap: anywhere;
     }
 
+    pre {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
     footer {
       padding: 24px;
       background-color: #ffffff;
       border-top: 2px solid #333333;
       text-align: center;
+    }
+
+    .activity-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .activity-button {
+      padding: 12px 16px;
+      border: 2px solid #222222;
+      border-radius: 6px;
+      background: #222222;
+      color: #ffffff;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    .activity-button.secondary {
+      background: #ffffff;
+      color: #222222;
+    }
+
+    .activity-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .activity-button:focus-visible,
+    #activity-target-frame:focus-visible {
+      outline: 3px solid #005fcc;
+      outline-offset: 4px;
+    }
+
+    .activity-table-wrap {
+      overflow-x: auto;
+    }
+
+    .activity-table {
+      border-collapse: collapse;
+      width: 100%;
+      background: #ffffff;
+    }
+
+    .activity-table th,
+    .activity-table td {
+      padding: 10px;
+      border: 1px solid #76552b;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    #activity-target-frame {
+      display: block;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 650px;
+      padding: 10px;
+      font: inherit;
+      margin: 8px 0;
+    }
+
+    #activity-api-status {
+      min-height: 1.6em;
+    }
+
+    #activity-embed {
+      margin-top: 16px;
     }
   </style>
 
@@ -108,24 +182,30 @@
     window.foobar = 'foo';
     window.testing = 122;
 
+    window.qaGrowReady = false;
+
     window.ngxReadyMicro = function () {
+      window.qaGrowReady = true;
       console.log('QA: Grow API ready');
+      document.dispatchEvent(new Event('qa:grow-ready'));
     };
   </script>
 
-  <!-- One-time Q1 Placement Manager code -->
- <script src="https://q1-displayx.ngx.dev/manager/8bf38e6e-5b96-4a19-96c5-5a74c51746c4"></script>
+  <!-- One-time Q1 Placement Manager code. Keep exactly one copy. -->
+  <!-- Enable debug=true using the developer-confirmed method when needed. -->
+  <script src="https://q1-displayx.ngx.dev/manager/8bf38e6e-5b96-4a19-96c5-5a74c51746c4"></script>
 </head>
 
 <body>
   <header>
     <h1 id="my-title">
-      Lightbox Control and Re-evaluation API Test
+      Lightbox API and Campaign Activity Test
     </h1>
 
     <p>
       Use this parent page to test Lightbox opening, closing,
-      display-rule re-evaluation, triggers and route changes.
+      display-rule re-evaluation, triggers, route changes
+      and campaign activity targeting.
     </p>
 
     <p>
@@ -133,6 +213,255 @@
       <code>?NGX_PM_TEST</code> to the page URL.
       Use <code>&amp;NGX_PM_TEST</code> if other parameters already exist.
     </p>
+
+    <!-- Campaign activity controls -->
+    <div id="campaign-activity-qa" class="test-controls">
+      <h2>Targeting based on campaign activity</h2>
+
+      <p>
+        <strong>Environment:</strong>
+        Q1 / account 168 / Channel A / PM-A.
+      </p>
+
+      <p>
+        <strong>Source C (8001):</strong> generate activity here.
+        <strong>Target B (8000):</strong> check whether its configured
+        rule allows it to open.
+        <strong>D (8002):</strong> optional different campaign.
+      </p>
+
+      <div class="activity-table-wrap">
+        <table class="activity-table">
+          <caption>Baseline settings to configure in Console</caption>
+
+          <thead>
+            <tr>
+              <th scope="col">Destination</th>
+              <th scope="col">Trigger and selector</th>
+              <th scope="col">Other settings</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <th scope="row">C — source (8001)</th>
+              <td>
+                On Click:
+                <code>#open-source</code>
+              </td>
+              <td>
+                No display rules; no frequency cap;
+                Cookie Consent None initially; Test Mode on.
+              </td>
+            </tr>
+
+            <tr>
+              <th scope="row">B — target (8000)</th>
+              <td>
+                On Click:
+                <code>#check-target</code>
+              </td>
+              <td>
+                No display rules for baseline, then add the rule
+                under test; no cap; Cookie Consent None initially;
+                Test Mode on.
+              </td>
+            </tr>
+
+            <tr>
+              <th scope="row">D — optional (8002)</th>
+              <td>
+                On Click:
+                <code>#open-other</code>
+              </td>
+              <td>
+                Assign only for tests needing a different campaign;
+                no rules/cap; Cookie Consent None initially;
+                Test Mode on.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        Use the selector-based On Click trigger.
+        Remove B's previous variable rules and cap.
+        Keep unrelated destinations unassigned during clean-history
+        tests. Record original settings before changing them.
+      </p>
+
+      <div class="activity-buttons">
+        <button
+          id="open-source"
+          class="activity-button"
+          type="button"
+        >
+          Open source C (8001)
+        </button>
+
+        <button
+          id="check-target"
+          class="activity-button"
+          type="button"
+        >
+          Check target B (8000)
+        </button>
+
+        <button
+          id="open-other"
+          class="activity-button secondary"
+          type="button"
+        >
+          Open other campaign D (8002)
+        </button>
+      </div>
+
+      <p>
+        These three buttons do not call the API.
+        Grow's configured On Click selectors handle them.
+        The D button requires D to be assigned and configured.
+      </p>
+
+      <h3>Re-evaluate B after generating activity</h3>
+
+      <label for="activity-target-frame">
+        B destination iframe ID — verify against its current destination
+      </label>
+
+      <input
+        id="activity-target-frame"
+        type="text"
+        value="ngxFrame3c7e512f-bfc8-4493-a6f1-8b3968d18e8c"
+        autocomplete="off"
+        spellcheck="false"
+        aria-describedby="activity-frame-help"
+      >
+
+      <p id="activity-frame-help">
+        This is the previously tested destination ID.
+        Change it if B's destination has changed.
+        Campaign ID 8000 is not an iframe ID.
+      </p>
+
+      <button
+        id="reevaluate-target"
+        class="activity-button secondary"
+        type="button"
+        disabled
+      >
+        Re-evaluate target B
+      </button>
+
+      <p id="activity-api-status" role="status">
+        Waiting for Grow API readiness.
+      </p>
+
+      <p>
+        After re-evaluation, click <strong>Check target B</strong>.
+        A re-evaluation request is not proof that the rule passed.
+        Verify whether B actually opens.
+        This control never force-opens B.
+      </p>
+
+      <h3>First test — show B after C is submitted</h3>
+
+      <ol>
+        <li>
+          First confirm B and C each open from their buttons
+          with no rules configured.
+        </li>
+
+        <li>
+          In B's destination:
+          Settings → Manage Display Rules → Who → Campaign activity →
+          <strong>Campaign</strong> →
+          <strong>form was submitted</strong> →
+          select <strong>C (8001)</strong>.
+        </li>
+
+        <li>
+          Save the rule popup and destination.
+          Refresh test8 with <code>NGX_PM_TEST</code>.
+        </li>
+
+        <li>
+          Perform the independent-test reset below.
+          Click <strong>Check target B</strong>.
+          Expected: B stays hidden.
+        </li>
+
+        <li>
+          Open C, complete its required fields and submit successfully.
+          Confirm its success screen and entry.
+          Close C if it remains open.
+        </li>
+
+        <li>
+          Click <strong>Re-evaluate target B</strong>,
+          then <strong>Check target B</strong>.
+          Expected: B opens.
+        </li>
+      </ol>
+
+      <h3>Inspect and reset history</h3>
+
+      <p>
+        In DevTools → Application → Local Storage,
+        choose the <strong>parent-page origin</strong>
+        and inspect <code>grow_cp_events</code>.
+        Identify C by campaign 8001 and B by campaign 8000.
+        Readable events may require <code>debug=true</code>
+        on the loaded campaign URLs; confirm the manager's
+        debug propagation with the developer.
+      </p>
+
+      <ol>
+        <li>
+          Before an independent test, close Lightboxes
+          and unassign unused campaigns/embeds.
+        </li>
+
+        <li>
+          Delete only <code>grow_cp_events</code>
+          from the parent origin.
+        </li>
+
+        <li>
+          Refresh to clear previous in-memory events too.
+          Set the required consent state separately.
+        </li>
+
+        <li>
+          Do not reset between a test's before/after checks
+          or when preserving history for elapsed-time tests.
+        </li>
+      </ol>
+
+      <p>
+        For the baseline, set privacy to None on every assigned campaign.
+        For consent cases, enable the required integration
+        and follow the test plan.
+        This page does not automatically grant consent,
+        clear storage or generate campaign events.
+      </p>
+
+      <h3>Optional source embed</h3>
+
+      <p>
+        Assign a suitable form embed only for the embed scenarios.
+        Configure selector <code>#activity-embed</code>,
+        Append and Adaptive sizing.
+        A visible embed can immediately record a view,
+        so leave it unassigned during empty-history tests.
+      </p>
+
+      <div id="activity-embed" class="target">
+        <p>
+          Existing content before the optional campaign activity embed.
+        </p>
+      </div>
+    </div>
 
     <div class="test-controls">
       <h2>Click-trigger test</h2>
@@ -333,9 +662,7 @@ qaRouteUrl.searchParams.set('qaRoute', 'second');
 history.pushState({}, '', qaRouteUrl);
 NGX.api('evaluate:display:rules');</code></pre>
 
-      <p>
-        To remove the test route:
-      </p>
+      <p>To remove the test route:</p>
 
       <pre><code>var qaRouteUrl = new URL(location.href);
 qaRouteUrl.searchParams.delete('qaRoute');
@@ -381,9 +708,7 @@ NGX.api('evaluate:display:rules');</code></pre>
         when targeting an individual Lightbox through the API.
       </p>
 
-      <p>
-        Close all open Lightboxes:
-      </p>
+      <p>Close all open Lightboxes:</p>
 
       <pre><code>NGX.api('lightbox:close');</code></pre>
 
@@ -394,11 +719,70 @@ NGX.api('evaluate:display:rules');</code></pre>
   </main>
 
   <footer>
-    Lightbox Control and Re-evaluation API Test — test8
+    Lightbox API and Campaign Activity Test — test8
   </footer>
 
   <script>
     console.log('QA: test8 parent page loaded');
+
+    (function () {
+      var button = document.getElementById('reevaluate-target');
+      var status = document.getElementById('activity-api-status');
+      var frameInput = document.getElementById('activity-target-frame');
+
+      function updateReadyState() {
+        var ready =
+          window.qaGrowReady &&
+          window.NGX &&
+          typeof window.NGX.api === 'function';
+
+        button.disabled = !ready;
+
+        status.textContent = ready
+          ? 'Grow API ready. Generate source activity, re-evaluate B, then click Check target B.'
+          : 'Waiting for Grow API readiness.';
+      }
+
+      document.addEventListener('qa:grow-ready', updateReadyState);
+      updateReadyState();
+
+      button.addEventListener('click', function () {
+        var frameId = frameInput.value.trim();
+
+        if (
+          !/^ngxFrame[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(frameId)
+        ) {
+          status.textContent =
+            'Enter a full destination iframe ID: ngxFrame followed by its UUID.';
+          return;
+        }
+
+        if (!window.NGX || typeof window.NGX.api !== 'function') {
+          status.textContent =
+            'Grow API is unavailable. Check the manager script and Console.';
+          return;
+        }
+
+        try {
+          window.NGX.api('evaluate:display:rules', frameId);
+
+          console.log(
+            'QA: requested display-rule re-evaluation for',
+            frameId
+          );
+
+          status.textContent =
+            'Re-evaluation requested for ' +
+            frameId +
+            '. Click Check target B and observe whether B opens.';
+        } catch (error) {
+          console.error('QA: re-evaluation request failed', error);
+
+          status.textContent =
+            'Re-evaluation request failed. Check the browser Console.';
+        }
+      });
+    }());
   </script>
 </body>
 </html>
