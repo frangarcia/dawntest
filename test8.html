@@ -129,7 +129,8 @@
     }
 
     .activity-button:focus-visible,
-    #activity-target-frame:focus-visible {
+    #activity-target-frame:focus-visible,
+    #qa-parent-input:focus-visible {
       outline: 3px solid #005fcc;
       outline-offset: 4px;
     }
@@ -162,6 +163,16 @@
       margin: 8px 0;
     }
 
+    #qa-parent-input {
+      display: block;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 480px;
+      padding: 10px;
+      margin-top: 8px;
+      font: inherit;
+    }
+
     #activity-api-status {
       min-height: 1.6em;
     }
@@ -192,15 +203,13 @@
   </script>
 
   <!-- One-time Q1 Placement Manager code. Keep exactly one copy. -->
-  <!-- Enable debug=true using the developer-confirmed method when needed. -->
- <!-- Debug off -->
-<!-- Debug on -->
-<script src="https://q1-displayx.ngx.dev/manager/8bf38e6e-5b96-4a19-96c5-5a74c51746c4"></script>
+  <script src="https://q1-displayx.ngx.dev/manager/8bf38e6e-5b96-4a19-96c5-5a74c51746c4"></script>
 </head>
 
 <body>
   <div class="test-controls">
     <label for="qa-parent-input">Parent-page interaction test</label>
+
     <input
       id="qa-parent-input"
       type="text"
@@ -208,6 +217,7 @@
     >
   </div>
 
+  <header>
     <h1 id="my-title">
       Lightbox API and Campaign Activity Test
     </h1>
